@@ -1,27 +1,13 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $name string */
-/* @var $message string */
-/* @var $exception Exception */
-
-use yii\helpers\Html;
-
 $this->title = $name;
 ?>
-<div class="site-error">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="alert alert-danger">
-        <?= nl2br(Html::encode($message)) ?>
+<div class="layui-container">
+    <div class="fly-panel">
+        <div class="fly-none">
+            <h2><i class="layui-icon layui-icon-404"></i></h2>
+            <p>页面或者数据被纸飞机运到火星了，啥都看不到了…</p>
+            <!-- <a><a href="/">去首页 </a></p> -->
+        </div>
     </div>
-
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
-
 </div>

@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 use Yii;
@@ -22,11 +23,11 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'do-login', 'error'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'show'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -35,7 +36,7 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['get'],
                 ],
             ],
         ];
@@ -57,10 +58,22 @@ class SiteController extends Controller
      * Displays homepage.
      *
      * @return string
+     * 
+     * 左侧框架
      */
     public function actionIndex()
     {
+        $this->layout = 'main';
         return $this->render('index');
+    }
+
+    /**
+     * 登录后
+     * 默认的【我的桌面】
+     */
+    public function actionShow(){
+        $this->layout = 'new';
+        return $this->render('show');
     }
 
     /**
@@ -70,19 +83,44 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = false;
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        } else {
-            $model->password = '';
+        return $this->render('login');
+    }
 
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+    /**
+     * 异步处理登录
+     */
+    public function actionDoLogin()
+    {
+        $model = new LoginForm();
+
+        $model->load(Yii::$app->request->post());
+
+        if ($model->login()) {
+            return json_encode(['code' => 'success', 'msg' => '登录成功']);
+        } else {
+            $errors = $model->errors;
+
+            $msg = '';
+            if (is_array($errors)) {
+                foreach ($errors as $key => $val) {
+                    if (is_array($val)) {
+                        foreach ($val as $index  => $item) {
+                            $msg .= $item . '<br>';
+                        }
+                    } else {
+                        $msg .= $val . '<br>';
+                    }
+                }
+            } else {
+                $msg .= $errors;
+            }
+
+            return json_encode(['code' => 'fail', 'msg' => $msg]);
         }
     }
 

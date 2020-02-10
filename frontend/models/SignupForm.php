@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\models;
 
 use Yii;
@@ -71,9 +72,12 @@ class SignupForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            // ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
             ->setTo($this->email)
-            ->setSubject('Account registration at ' . Yii::$app->name)
+            ->setSubject('在' . Yii::$app->name . '的账户注册')
+
+            // ->setTextBody('邮箱验证')
+            // ->setHtmlBody('您的验证码为<b>' . mt_rand(1111, 9999) . '</b>，有效期为10分钟') //发送的消息内容 html文本
             ->send();
     }
 }
